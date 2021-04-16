@@ -1,4 +1,6 @@
-
+/*
+ * Created by Jerry Klos
+ */
 public class Card {
 	
 	private int cardID;
@@ -7,13 +9,12 @@ public class Card {
 	private int[] defense;
 	private String type;
 	
-	public Card(int cardID, String name, int[] attack,
-				int[] defense, String type) {
+	public Card(int cardID) {
 		this.cardID = cardID;
-		this.name = name;
-		this.attack = attack;
-		this.defense = defense;
-		this.type = type;
+		name = GameData.CARD_NAMES[cardID][0];
+		attack = GameData.ATTACK_STATS[cardID];
+		defense = GameData.DEFENSE_STATS[cardID];
+		type = GameData.CARD_NAMES[cardID][1];
 	}
 
 	public int getCardID() {
@@ -61,10 +62,10 @@ public class Card {
 		s.append("-------------------\n");
 		s.append("| \\ " + getAttack(0) + " -- " + getAttack(1) + " -- " + getAttack(2) + " / |\n");
 		s.append("| / " + getDefense(0) + " -- " + getDefense(1) + " -- " + getDefense(2) + " \\ |\n");
-		s.append("|                 |\n");
-		s.append("|      " + getName() + "      |\n");
-		s.append("|                 |\n");
-		s.append("|     " + getType() + "     |\n");
+		s.append("|-----------------|\n");
+		s.append("    " + getName() + "\n");
+		s.append("\n");
+		s.append("    " + getType() + "\n");
 		s.append("-------------------\n");
 		return s.toString();
 	}
@@ -81,11 +82,9 @@ public class Card {
 		// TODO Auto-generated method stub
 		int[] attackValues = new int[] {2,3,4};
 		int[] defenseValues = new int[] {4,2,3};
-		int id = 01;
-		String cardName = "Jerry";
-		String cardType = "Creator";
+		int id = 0;
 		
-		Card card = new Card(id,cardName,attackValues,defenseValues,cardType);
+		Card card = new Card(0);
 		System.out.println(card.printCard());
 		System.out.println(card.toString());
 		System.out.println(card.toString());
