@@ -4,6 +4,7 @@
 public class GameData {
 	
 	public static final int FULL_DECK_SIZE = 16;
+	public static final int HAND_SIZE = 4;
 	public static final String[][] CARD_NAMES = {
 			{"Jerry","Creator"},
 			{"Liakada","Unknown"},

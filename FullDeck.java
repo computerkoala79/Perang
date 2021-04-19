@@ -20,6 +20,10 @@ public class FullDeck {
 		}
 	}
 	
+	public Card drawCard() {
+		return cards.remove(0);
+	}
+	
 	public String printFullDeck() {
 		StringBuilder s = new StringBuilder();
 		for(int i = 0;i<GameData.FULL_DECK_SIZE;i++) {
