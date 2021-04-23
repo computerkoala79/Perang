@@ -7,12 +7,14 @@ public class CardSlot {
 	private int[] canAttack = new int[3];
 	private Card card;
 	private Player player;
+	private boolean faceUp;
 	
 	public CardSlot (int position) {
 		this.position = position;
 		card = null;
 		buildCanAttack(position);
 		player = null;
+		faceUp = false;
 	}
 	
 	private void buildCanAttack(int position) {
@@ -29,6 +31,18 @@ public class CardSlot {
 					canAttack[1] = 1;
 					canAttack[2] = 2;
 					break;
+		}
+	}
+	
+	public boolean getFaceUp() {
+		return faceUp;
+	}
+	
+	public void flipCard() {
+		if(!faceUp) {
+			faceUp = true;
+		} else {
+			faceUp = false;
 		}
 	}
 

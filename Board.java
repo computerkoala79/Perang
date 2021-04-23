@@ -3,6 +3,9 @@
  */
 public class Board {
 	
+	private CardSlot[] playerOneSlots;
+	private CardSlot[] playerTwoSlots;
+	private CardSlot fieldSlot;
 	
 	public Board() {
 		

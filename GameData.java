@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 /*
  * Created by Jerry Klos
  */
@@ -6,6 +8,11 @@ public class GameData {
 	public static final int PLAYER_STARTER_DECK_SIZE = 5;
 	public static final int FULL_DECK_SIZE = 16;
 	public static final int HAND_SIZE = 4;
+	public static final int BOARD_WIDTH = 1280;
+	public static final int BOARD_HEIGHT = 720;
+	public static final int CARD_WIDTH = 180;
+	public static final int CARD_HEIGHT = 252;
+	public static final Color CARD_TEXT = new Color(13,2,8); // black
 	public static final String[][] CARD_NAMES = {
 			{"Jerry","Creator"},
 			{"Liakada","Unknown"},
