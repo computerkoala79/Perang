@@ -7,9 +7,10 @@ import java.util.Random;
  */
 public class FullDeck {
 	
+	private static FullDeck single_instance = null;
 	private ArrayList<Card> cards;
 	
-	public FullDeck() {
+	private FullDeck() {
 		cards = new ArrayList<Card>();
 		buildDeck();
 	}
@@ -18,6 +19,14 @@ public class FullDeck {
 		for(int i = 0; i<GameData.FULL_DECK_SIZE;i++) {
 			cards.add(new Card(i));
 		}
+	}
+	
+	public static FullDeck getInstance() {
+		if(single_instance == null)
+			single_instance = new FullDeck();
+		
+		return single_instance;
+		
 	}
 	
 	public Card drawCard() {
