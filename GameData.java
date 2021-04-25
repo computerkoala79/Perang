@@ -13,6 +13,9 @@ public class GameData {
 	public static final int CARD_WIDTH = 180;
 	public static final int CARD_HEIGHT = 252;
 	public static final Color CARD_TEXT = new Color(13,2,8); // black
+	public static final Color MSG_PANEL_TEXT = new Color(0,100,15); // greenish
+	public static final Color INPUT_COLOR = new Color(0,212,22); // light greenish
+	public static final Color ERROR_COLOR = new Color(225,5,5); // red
 	public static final String[][] CARD_NAMES = {
 			{"Jerry","Creator"},
 			{"Liakada","Unknown"},
