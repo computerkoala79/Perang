@@ -55,6 +55,11 @@ public class BoardPanel extends JFrame {
 		
 	}
 	
+	private void drawCardText(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		BoardPanel bp = new BoardPanel();

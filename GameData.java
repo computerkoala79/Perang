@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 
 /*
  * Created by Jerry Klos
@@ -16,6 +17,9 @@ public class GameData {
 	public static final Color MSG_PANEL_TEXT = new Color(0,100,15); // greenish
 	public static final Color INPUT_COLOR = new Color(0,212,22); // light greenish
 	public static final Color ERROR_COLOR = new Color(225,5,5); // red
+	public static final Color CMD_PANEL_BG_COLOR = new Color(10,2,5);
+	public static final Color CMD_PANEL_FG_COLOR = new Color(12,5,111);
+	public static final Font VERDANA = new Font("Verdana",Font.BOLD,12);
 	public static final String[][] CARD_NAMES = {
 			{"Jerry","Creator"},
 			{"Liakada","Unknown"},

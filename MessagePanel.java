@@ -84,5 +84,97 @@ public class MessagePanel extends JPanel{
         sb.append(")");
         return sb.toString();
     }
+    
+    private void addToMainContent(String line) {
+    	mainContent.add(line + "</p><p>");
+    	// check for over max size, remove oldest
+    	if(mainContent.size() > MAX_LINES)
+    		mainContent.remove(0);
+    }
+    
+    public void println(String text) {
+    	// update the line
+    	currentLine = currentLine + text;
+    	
+    	// Move to new line
+    	addToMainContent(currentLine);
+    	currentLine = "";
+    	
+    	// redraws the new html
+    	drawMessagePanel();
+    }
+    
+    /**
+     * Prints text passed in and moves to new line. Prints the text in the color passed in
+     *
+     * @param text text to print
+     * @param color java Color object representing the color the text should appear in
+     */
+    public void println(String text, Color color)
+    {
+        // Convert color to a string
+        String rgbText = colorToRGBString(color);
+
+        // create a span with the chosen colou
+        String front = "<span style=\"color: " + rgbText + ";\">";
+        String back = "</span>";
+
+        // Update line
+        currentLine = currentLine + front + text + back;
+
+        // Move to new line
+        addToMainContent(currentLine);
+        currentLine = "";
+
+        drawMessagePanel();
+    }
+    
+    /**
+     * Prints a line with a leading ">" and uses inputTextColor set in the constructor
+     * @param text text to print
+     */
+    public void printInputLine(String text)
+    {
+        println("> " + text, inputTextColor);
+        // add blank line
+        println("");
+    }
+    
+    /**
+     * Prints text but does not move to a new line
+     * Changes the color of the text (not the entire line) to match color object passed in
+     *
+     * @param text text to print
+     * @param color color object that matches the desired color of text
+     */
+    public void print(String text, Color color)
+    {
+        // Convert color to a string
+        String rgbText = colorToRGBString(color);
+
+        // create a span with the chosen color
+        String front = "<span style=\"color: " + rgbText + ";\">";
+        String back = "</span>";
+
+        // Update line
+        currentLine = currentLine + front + text + back;
+    }
+    
+    /**
+     * Updates the editorPane's text current content
+     */
+    private void drawMessagePanel()
+    {
+        String contents = header;
+        for (String line : mainContent)
+        {
+            contents += line;
+        }
+        contents += currentLine + footer;
+        message.setText(contents);
+
+        // Scrolls text
+        message.setCaretPosition(message.getDocument().getLength());
+    }
 	
 }
