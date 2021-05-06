@@ -5,14 +5,20 @@ import java.awt.Font;
  * Created by Jerry Klos
  */
 public class GameData {
-	
-	public static final int PLAYER_STARTER_DECK_SIZE = 5;
+	public static final int EMPTY_SLOT = -10;
+	public static final int FACE_DOWN = -20;
+	public static final int LEFT = 0;
+	public static final int CENTER = 1;
+	public static final int RIGHT = 2;
+	public static final int PLAYER_STARTER_DECK_SIZE = 7;
 	public static final int FULL_DECK_SIZE = 16;
 	public static final int HAND_SIZE = 4;
 	public static final int BOARD_WIDTH = 1280;
 	public static final int BOARD_HEIGHT = 720;
 	public static final int CARD_WIDTH = 180;
 	public static final int CARD_HEIGHT = 252;
+	public static final int NUM_PLAYERS = 2;
+	public static final int NUM_SLOTS = 3;
 	public static final Color CARD_TEXT = new Color(13,2,8); // black
 	public static final Color MSG_PANEL_TEXT = new Color(0,100,15); // greenish
 	public static final Color INPUT_COLOR = new Color(0,212,22); // light greenish

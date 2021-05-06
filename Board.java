@@ -5,27 +5,23 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Board {
 	
-	public static final int LEFT = 0;
-	public static final int CENTER = 1;
-	public static final int RIGHT = 2;
+	private CardSlot[] playerOneSlots = new CardSlot[GameData.NUM_SLOTS];
+	private CardSlot[] playerTwoSlots = new CardSlot[GameData.NUM_SLOTS];
 	
-	private CardSlot[] playerOneSlots = new CardSlot[3];
-	private CardSlot[] playerTwoSlots = new CardSlot[3];
+	private PlayerSide[] playerSides = new PlayerSide[GameData.NUM_PLAYERS];
 	
-	private PlayerSide[] playerSides = new PlayerSide[2];
-	
-	public Board() {
+	public Board(Player[] players) {
 		
-		for(int i = 0; i < playerSides.length; i++) {
-			playerSides[i] = new PlayerSide();
+		for(int i = 0; i < GameData.NUM_PLAYERS; i++) {
+			playerSides[i] = new PlayerSide(players[i]);
 		}
 		
 		// create player slots
-		for(int i=0; i < playerOneSlots.length; i++) {
+		for(int i=0; i < GameData.NUM_SLOTS; i++) {
 			playerOneSlots[i] = new CardSlot(i);
 		}
 		
-		for(int i=0; i < playerTwoSlots.length; i++) {
+		for(int i=0; i < GameData.NUM_PLAYERS; i++) {
 			playerOneSlots[i] = new CardSlot(i);
 		}
 		
@@ -55,44 +51,16 @@ public class Board {
 	
 	private void placeRight(Player player, Card card) {
 		// TODO Auto-generated method stub
-		playerSides[player.getPlayerid()].getRight().setCard(card, player, RIGHT);
+		playerSides[player.getPlayerid()].getRight().setCard(card, player, GameData.RIGHT);
 	}
 
 	private void placeCenter(Player player, Card card) {
 		// TODO Auto-generated method stub
-		playerSides[player.getPlayerid()].getCenter().setCard(card, player, CENTER);
+		playerSides[player.getPlayerid()].getCenter().setCard(card, player, GameData.CENTER);
 	}
 
 	private void placeLeft(Player player, Card card) {
-		playerSides[player.getPlayerid()].getLeft().setCard(card, player, LEFT);
-	}
-	
-	public String printPlayerSlots(int playerid) {
-		StringBuilder s = new StringBuilder();
-		if(playerid == 0) {
-			for(int i = 0; i < playerOneSlots.length; i++) {
-				s.append("Card Slot " + i);
-				if(playerOneSlots[i].isSlotEmpty(i)) {
-					s.append("Empty Slot");
-				} else {
-					s.append(playerOneSlots[i].printSlot());
-				}
-			}
-		}
-		return s.toString();
-	}
-	
-	public void ppplaceCard(int cardslot, Player player, Card card) {
-		
-		switch(player.getPlayerid()) {
-			case 0: if(!playerOneSlots[cardslot].isSlotEmpty(cardslot)) return;
-					playerOneSlots[cardslot].setCard(card, player, cardslot);
-					return;
-			default: if(!playerTwoSlots[cardslot].isSlotEmpty(cardslot)) return; 
-					 playerTwoSlots[cardslot].setCard(card, player, cardslot);
-					 return;
-		}
-		
+		playerSides[player.getPlayerid()].getLeft().setCard(card, player, GameData.LEFT);
 	}
 	
 	/**

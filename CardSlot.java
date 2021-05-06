@@ -34,7 +34,11 @@ public class CardSlot {
 		}
 	}
 	
-	public boolean getFaceUp() {
+	public boolean isEmpty() {
+		return card == null;
+	}
+	
+	public boolean isFaceUp() {
 		return faceUp;
 	}
 	

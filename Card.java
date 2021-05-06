@@ -10,11 +10,19 @@ public class Card {
 	private String type;
 	
 	public Card(int cardID) {
-		this.cardID = cardID;
-		name = GameData.CARD_NAMES[cardID][0];
-		attack = GameData.ATTACK_STATS[cardID];
-		defense = GameData.DEFENSE_STATS[cardID];
-		type = GameData.CARD_NAMES[cardID][1];
+		if(cardID == GameData.EMPTY_SLOT) {
+			this.cardID = cardID;
+			name = "** Empty **";
+			attack = null;
+			defense = null;
+			type = "** Empty **";
+		} else {
+			this.cardID = cardID;
+			name = GameData.CARD_NAMES[cardID][0];
+			attack = GameData.ATTACK_STATS[cardID];
+			defense = GameData.DEFENSE_STATS[cardID];
+			type = GameData.CARD_NAMES[cardID][1];
+		}
 	}
 
 	public int getCardID() {

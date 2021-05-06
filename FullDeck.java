@@ -13,6 +13,7 @@ public class FullDeck {
 	private FullDeck() {
 		cards = new ArrayList<Card>();
 		buildDeck();
+		shuffle();
 	}
 	
 	private void buildDeck() {
@@ -50,7 +51,7 @@ public class FullDeck {
 		return s.toString();
 	}
 	
-	private void shuffle() {
+	public void shuffle() {
 		Random rand = new Random();
 		int r = 0;
 		for(int i = 1; i<GameData.FULL_DECK_SIZE ; i++) {

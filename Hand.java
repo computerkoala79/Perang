@@ -6,9 +6,10 @@ import java.util.ArrayList;
 public class Hand {
 	
 	private ArrayList<Card> cards;
-	private FullDeck deck;
+	private PlayerDeck deck;
 	
-	public Hand() {
+	public Hand(FullDeck fulldeck) {
+		deck = deck.getInstance();
 		cards = new ArrayList<>();
 		buildHand(deck);
 	}
@@ -18,8 +19,19 @@ public class Hand {
 			cards.add(deck.drawCard());
 	}
 	
+	public String printPlayerHand() {
+		StringBuilder s = new StringBuilder();
+		s.append("*** Your Hand ***\n");
+		for(Card c : cards) {
+			s.append(c.toString() + "------\n");
+		}
+		s.append("**********");
+		return s.toString();
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+		Hand h = new Hand();
+		System.out.println(h.printPlayerHand());
 	}
 }

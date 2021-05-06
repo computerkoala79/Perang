@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 public class PlayerDeck {
 	
@@ -19,6 +21,17 @@ public class PlayerDeck {
 		fulldeck = FullDeck.getInstance();
 		for(int i = 0; i < deckSize; i++) {
 			cards.add(fulldeck.drawCard());
+		}
+	}
+	
+	public void shuffle() {
+		Random rand = new Random();
+		int r = 0;
+		for(int i = 1; i < deckSize ; i++) {
+			r = rand.nextInt(i+1);
+			if(r!=i) {
+				Collections.swap(cards, i, r);
+			}
 		}
 	}
 	
