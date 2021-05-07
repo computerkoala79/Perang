@@ -5,6 +5,9 @@ import java.awt.Font;
  * Created by Jerry Klos
  */
 public class GameData {
+	public static final boolean FACEUP = true;
+	public static final int AI_ID = 1;
+	public static final int PLAYER_ID = 0;
 	public static final int EMPTY_SLOT = -10;
 	public static final int FACE_DOWN = -20;
 	public static final int LEFT = 0;

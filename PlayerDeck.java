@@ -7,14 +7,14 @@ public class PlayerDeck {
 	private ArrayList<Card> cards;
 	private FullDeck fulldeck;
 	private int deckSize;
-	private Player player;
 	
-	public PlayerDeck(int deckSize, Player player) {
+	
+	public PlayerDeck(int deckSize) {
 		validateDeckBuildSize(deckSize);
 		this.deckSize = deckSize;
 		cards = new ArrayList<>();
 		buildPlayerDeck(deckSize);
-		this.player = player;
+		
 	}
 	
 	private void buildPlayerDeck(int deckSize) {
@@ -67,7 +67,7 @@ public class PlayerDeck {
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		if(deckSize == 0)
-			return player.getName() + ", your deck is empty.";
+			return "Your deck is empty.";
 		
 		for(int i = 0;i<deckSize;i++) {
 			s.append(cards.get(i).toString() + "\n");

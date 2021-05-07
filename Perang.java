@@ -24,17 +24,33 @@ public class Perang {
 	
 	protected void setup() {
 		// code for the initial setup
+		
+		// create a deck from the full list of cards
 		fulldeck = FullDeck.getInstance();
-		String pOne = ui.getPlayerName();
-		String pTwo = "A.I.";
-		players[0] = new Player(0,pOne);
-		players[1] = new Player(1,pTwo);
+		
+		// create two players
+		String playername = ui.getPlayerName();
+		String ainame = "A.I.";
+		
+		players[GameData.PLAYER_ID] = new Player(GameData.PLAYER_ID,playername);
+		players[GameData.AI_ID] = new Player(GameData.AI_ID,ainame);
+		
+		// create the board
 		board = new Board(players);
+		
+		// set player cards on the board
+		ui.placePlayerCards(players[GameData.PLAYER_ID], board);
+		
+		ui.setAIcards(players[GameData.AI_ID], board);
+		
+		System.out.println(board.printBoard());
+		
 	}
 	
 	private static String printStartScreen() {
 		return "****************************\n\n"
 			 + "********** Perang **********\n\n"
+			 + "******* Card Battle ********\n\n"
 			 + "****************************\n\n";
 	}
 	

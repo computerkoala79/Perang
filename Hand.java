@@ -8,13 +8,14 @@ public class Hand {
 	private ArrayList<Card> cards;
 	private PlayerDeck deck;
 	
-	public Hand(FullDeck fulldeck) {
-		deck = deck.getInstance();
+	public Hand(PlayerDeck deck) {
+		this.deck = deck;
+		deck.shuffle();
 		cards = new ArrayList<>();
-		buildHand(deck);
+		buildHand();
 	}
 	
-	private void buildHand(FullDeck deck) {
+	private void buildHand() {
 		for(int i = 0; i < GameData.HAND_SIZE; i++)
 			cards.add(deck.drawCard());
 	}
@@ -29,9 +30,29 @@ public class Hand {
 		return s.toString();
 	}
 	
+	public int[] getCardIDs() {
+		int[] ids = new int[cards.size()];
+		int index = 0;
+		for(Card c : cards) {
+			ids[index++] = c.getCardID();
+		}
+		return ids;
+	}
+	
+	public Card getCard(int cardID) {
+		for(int i = 0; i < cards.size(); i++) {
+			if(cards.get(i).getCardID() == cardID) {
+				return cards.remove(i);
+			}
+		}
+		
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Hand h = new Hand();
+		PlayerDeck d = new PlayerDeck(7);
+		Hand h = new Hand(d);
 		System.out.println(h.printPlayerHand());
 	}
 }

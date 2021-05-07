@@ -14,7 +14,7 @@ public class CardSlot {
 		card = null;
 		buildCanAttack(position);
 		player = null;
-		faceUp = false;
+		faceUp = true;
 	}
 	
 	private void buildCanAttack(int position) {
@@ -42,12 +42,8 @@ public class CardSlot {
 		return faceUp;
 	}
 	
-	public void flipCard() {
-		if(!faceUp) {
-			faceUp = true;
-		} else {
-			faceUp = false;
-		}
+	public void setFaceUp(boolean faceUp) {
+		this.faceUp = faceUp;
 	}
 
 	public int getPosition() {
