@@ -4,18 +4,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Jerry Klos
  */
 public class Board {
-	
-	Player[] players;
-	
-	public Board(Player[] players) {
-		this.players = players;
+		
+	public Board() {
+		
 	}
-	
-//	public PlayerSide getPlayerSide(int side) {
-//		if(side != 0 || side != 1) { return null;}
-//		
-//		return playerSides[side];
-//	}
 	
 	public void placeCard(Player player, int position, Card card) {
 		int playerid = player.getPlayerid();
@@ -79,13 +71,13 @@ public class Board {
 		return ThreadLocalRandom.current().nextFloat() + defenseValue;
 	}
 	
-	public String printBoard() {
+	public String printBoard(Player player, Player ai) {
 		StringBuilder s = new StringBuilder();
 		
 		s.append("----------------------------------- ******* The Board ********* -----------------------------------\n");
-		s.append(players[GameData.AI_ID].printPlayerSide());
+		s.append(ai.printPlayerSide());
 		s.append("\n");
-		s.append(players[GameData.PLAYER_ID].printPlayerSide());
+		s.append(player.printPlayerSide());
 		s.append("----------------------------------- *************************** -----------------------------------\n");
 		
 		return s.toString();
@@ -97,7 +89,7 @@ public class Board {
 		Player p1 = new Player(0,"test player");
 		Player ai = new Player(1,"--- ai ---");
 		Player players[] = {p1,ai};
-		Board b = new Board(players);
+		Board b = new Board();
 		UserInterface ui = new UserInterface();
 		
 		

@@ -7,7 +7,6 @@ public class PlayerSide {
 	private CardSlot center;
 	private CardSlot right;
 	
-	
 	public PlayerSide() {
 		left = new CardSlot(GameData.LEFT);
 		center = new CardSlot(GameData.CENTER);
@@ -24,6 +23,52 @@ public class PlayerSide {
 
 	public CardSlot getRight() {
 		return right;
+	}
+	
+	public CardSlot getSlotByID(int slotid) {
+		switch(slotid) {
+		case GameData.LEFT: return getLeft();
+		case GameData.CENTER: return getCenter();
+		default: return getRight();
+		}
+	}
+	
+	public boolean allSlotsAreEmpty() {
+		return getLeft().isEmpty() &&
+			   getCenter().isEmpty() &&
+			   getRight().isEmpty();
+	}
+	
+	public boolean oneCardRemainingOnLeft() {
+		return !getLeft().isEmpty() &&
+			   getCenter().isEmpty() &&
+			   getRight().isEmpty();
+	}
+	
+	public boolean oneCardRemainingOnRight() {
+		return getLeft().isEmpty() &&
+			   getCenter().isEmpty() &&
+			   !getRight().isEmpty();
+	}
+	
+	public Card getCardFromSlotID(int slotid) {
+		switch(slotid) {
+			case GameData.LEFT: return this.getLeft().getCardInSlot();
+			case GameData.CENTER: return getCenter().getCardInSlot();
+			default: return this.getRight().getCardInSlot();
+		}
+	}
+	
+	public int[] getAttackValues(int slotid) {
+		return getCardFromSlotID(slotid).getAttackValues();
+	}
+	
+	public int[] getDefendValues(int slotid) {
+		return getCardFromSlotID(slotid).getDefendValues();
+	}
+	
+	public int[] getValidAttackDirections(int slotid) {
+		return this.getSlotByID(slotid).getValidAttackDirections();
 	}
 	
 	public static void main(String[] args) {

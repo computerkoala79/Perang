@@ -19,17 +19,17 @@ public class CardSlot {
 	
 	private void buildCanAttack(int position) {
 		switch(position) {
-			case 0: canAttack[0] = 0;
+			case 0: canAttack[0] = 1;
 					canAttack[1] = 1;
-					canAttack[2] = -1;
+					canAttack[2] = 0;
 					break;
 			case 1: canAttack[0] = 0;
 					canAttack[1] = 1;
-					canAttack[2] = 2;
+					canAttack[2] = 1;
 					break;
-			case 2: canAttack[0] = -1;
+			case 2: canAttack[0] = 0;
 					canAttack[1] = 1;
-					canAttack[2] = 2;
+					canAttack[2] = 1;
 					break;
 		}
 	}
@@ -44,6 +44,10 @@ public class CardSlot {
 	
 	public void setFaceUp(boolean faceUp) {
 		this.faceUp = faceUp;
+	}
+	
+	public int[] getValidAttackDirections() {
+		return canAttack;
 	}
 
 	public int getPosition() {
@@ -66,6 +70,10 @@ public class CardSlot {
 	
 	public boolean isSlotEmpty(int position) {
 		return card == null;
+	}
+	
+	public void removeCard() {
+		card = null;
 	}
 	
 	public String printSlot() {

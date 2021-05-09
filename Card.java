@@ -56,6 +56,14 @@ public class Card {
 	public void setDefense(int defenseValue, int defenseDirection) {
 		this.defense[defenseDirection] = defenseValue;
 	}
+	
+	public int[] getAttackValues() {
+		return attack;
+	}
+	
+	public int[] getDefendValues() {
+		return defense;
+	}
 
 	public String getType() {
 		return type;

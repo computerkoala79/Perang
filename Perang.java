@@ -7,7 +7,8 @@ public class Perang {
 	
 	protected FullDeck fulldeck;
 	protected Board board;
-	protected Player[] players = new Player[GameData.NUM_PLAYERS];
+	protected Player player;
+	protected Player ai;
 	protected UserInterface ui;
 	
 	public Perang() {
@@ -15,12 +16,6 @@ public class Perang {
 	}
 	
 	public Board getBoard() { return board; }
-	
-	public boolean isGameOver() {
-		// code to determine if the game is over
-		
-		return false;
-	}
 	
 	protected void setup() {
 		// code for the initial setup
@@ -32,19 +27,61 @@ public class Perang {
 		String playername = ui.getPlayerName();
 		String ainame = "A.I.";
 		
-		players[GameData.PLAYER_ID] = new Player(GameData.PLAYER_ID,playername);
-		players[GameData.AI_ID] = new Player(GameData.AI_ID,ainame);
+		player = new Player(GameData.PLAYER_ID,playername);
+		ai = new Player(GameData.AI_ID,ainame);
 		
 		// create the board
-		board = new Board(players);
+		board = new Board();
 		
 		// set player cards on the board
-		ui.placePlayerCards(players[GameData.PLAYER_ID], board);
+		ui.placePlayerCards(player, board);
 		
-		ui.setAIcards(players[GameData.AI_ID], board);
+		ui.setAIcards(ai, board);
 		
-		System.out.println(board.printBoard());
+		System.out.println(board.printBoard(player,ai));
 		
+	}
+	
+	public boolean isGameOver() {
+		// code to determine if the game is over
+		if(player.getPlayerSide().allSlotsAreEmpty()) {
+			System.out.println("------ " + ai.getName() + " wins!!! ------");
+			return true;
+		} else if(ai.getPlayerSide().allSlotsAreEmpty()) {
+			System.out.println("------ " + player.getName() + " wins!!! ------");
+			return true;
+		} else if(isTieGame()) {
+			System.out.println("------ Tie Game -------");
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean isTieGame() {
+		return (player.getPlayerSide().oneCardRemainingOnRight() && ai.getPlayerSide().oneCardRemainingOnLeft()) ||
+				(player.getPlayerSide().oneCardRemainingOnLeft() && ai.getPlayerSide().oneCardRemainingOnRight());
+	}
+	
+	protected void battle() {
+		// who goes first
+		int turn = board.coinFlip();
+		
+		if(turn == GameData.PLAYER_ID) {
+			System.out.println("\n*** " + player.getName() + ", will go first.***");
+		} else {
+			System.out.println("\n*** " + ai.getName() + ", will go first.***");
+		}
+		
+		do {
+			if(turn == GameData.PLAYER_ID) {
+				ui.cardBattle(player,ai,board);
+				turn = GameData.AI_ID;
+			} else {
+				ui.cardBattle(ai,player,board);
+				turn = GameData.PLAYER_ID;
+			}
+			System.out.println(board.printBoard(player,ai));
+		} while(!isGameOver());
 	}
 	
 	private static String printStartScreen() {
@@ -59,6 +96,7 @@ public class Perang {
 		System.out.println(printStartScreen());
 		Perang perang = new Perang();
 		perang.setup();
+		perang.battle();
 		
 	}
 }
