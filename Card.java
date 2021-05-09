@@ -100,7 +100,7 @@ public class Card {
 		int[] defenseValues = new int[] {4,2,3};
 		int id = 0;
 		
-		Card card = new Card(0);
+		Card card = new Card(6);
 		System.out.println(card.printCard());
 		System.out.println(card.toString());
 		System.out.println(card.toString());

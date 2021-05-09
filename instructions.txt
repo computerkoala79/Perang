@@ -1,0 +1,65 @@
+How to player Perang: Three Card Battle
+
+Perang has an ever expanding Full Deck of cards filled with
+characters, locations, weapons etc. from the upcoming game 
+"The Eternal History of Tenmia."
+
+At the start of this version of the game, the player and the A.I.
+draw 4 cards from the Full Deck into their hand. The player must choose
+3 of the cards to place on the board, face down onto the 3 open slots on 
+their side. The A.I. will do the same.
+
+The Game Board has 6 open slots where cards can be placed, 3 for each player.
+----------------------------
+|------- A.I. Side --------|
+|------	 --------   -------|
+||left|	 |center|   |right||
+||slot|	 | slot |   |slot ||
+|------	 --------   -------|
+|   |  \  /  |  \  /  |    |
+|   |   \/   |   \/   |    |   <-- Attack Vectors
+|   |   /\   |   /\   |    |
+|   |  /  \  |  /  \  |    |
+|------	 --------   -------|
+||left|	 |center|   |right||
+||slot|	 | slot |   |slot ||
+|------	 --------   -------|
+|------ Player Side -------|
+----------------------------
+
+On a player's turn, the player chooses one of their own cards to flip over
+and then chooses one of their opponents cards to attack which lies along
+one of the connected attack vectors as seen above. For example, a card in the
+left slot can only attack an opponents left or center slots while the center
+slot can attack any of the enemies occupied slots.
+
+Each Card has a set of Attack and Defend Values
+Example Card Details
+Card ID: 6
+Card Name: Temil
+Card Type: Tembian
+Attack: 7 7 4
+Defense: 2 2 8
+
+Example Card Display
+---------
+|\  |  /|
+| 7 7 4 |
+| 2 2 8 |
+|/  |  \|
+| Temil |
+|Tembian|
+---------
+
+The attack and defense values corespond to the direction and value of the 
+attack or defense. For example, the Temil card above will attack to the left
+and center with a value of 7 and attack to the right with a value of 4. If 
+attacked from the left or center, the Temil card will defend with a value of
+2 and if attacked from the right, will defend with a value of 8. 
+
+In the case of equal values of attack and defense, the values are randomly
+adjusted to determine a winner with the advantage going to the defense value.
+
+To win the game, one player must eliminate all the cards on the opponents side.
+In the case where each player has one card remaining and no connecting attack
+vectors, the ends in a draw.
