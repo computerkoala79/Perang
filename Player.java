@@ -80,6 +80,22 @@ public class Player {
 		return s.toString();
 	}
 	
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		CardSlot left = cardslots.getLeft();
+		CardSlot center = cardslots.getCenter();
+		CardSlot right = cardslots.getRight();
+		
+		
+		s.append("\t\t\t****************** Player: " + getName() + " ******************\n");
+		s.append("---------------\n");
+		s.append("|  \\  |  /   |\n");
+		s.append("|   " + printAttack(left) + "  " + printAttack(center) + "  " + printAttack(right) +      "\n");
+		
+		
+		return s.toString();
+	}
+	
 	private String printAttack(CardSlot slot) {
 		if(slot.isEmpty()) {
 			return "";

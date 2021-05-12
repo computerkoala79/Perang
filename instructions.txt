@@ -4,6 +4,8 @@ Perang has an ever expanding Full Deck of cards filled with
 characters, locations, weapons etc. from the upcoming game 
 "The Eternal History of Tenmia."
 
+The current version is text based only.
+
 At the start of this version of the game, the player and the A.I.
 draw 4 cards from the Full Deck into their hand. The player must choose
 3 of the cards to place on the board, face down onto the 3 open slots on 

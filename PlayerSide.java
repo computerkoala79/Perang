@@ -71,6 +71,17 @@ public class PlayerSide {
 		return this.getSlotByID(slotid).getValidAttackDirections();
 	}
 	
+	public int getNumberOfEmptySlots() {
+		int emptySlots = 0;
+		
+		for(int i = 0; i < GameData.NUM_SLOTS; i++) {
+			if(this.getSlotByID(i).isEmpty()) {
+				emptySlots++;
+			}
+		}
+		return emptySlots;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
