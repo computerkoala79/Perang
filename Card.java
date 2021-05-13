@@ -73,6 +73,31 @@ public class Card {
 		this.type = type;
 	}
 	
+	public int getHighestAttackDirectionFromCard() {
+		int highestAttackValue = -1;
+		int attackDirection = -1;
+		int[] attackValues = getAttackValues();
+		for(int i = 0; i < attackValues.length; i++) {
+			if(highestAttackValue < attackValues[i]) {
+				highestAttackValue = attackValues[i];
+				attackDirection = i;
+			}
+		}
+		return attackDirection;
+	}
+	
+	public int getHighestAttackValueFromCard() {
+		int highestAttackValue = -1;
+		
+		int[] attackValues = getAttackValues();
+		for(int i = 0; i < attackValues.length; i++) {
+			if(highestAttackValue < attackValues[i]) {
+				highestAttackValue = attackValues[i];
+			}
+		}
+		return highestAttackValue;
+	}
+	
 	public String printCard() {
 		StringBuilder s = new StringBuilder();
 		s.append("-------------------\n");

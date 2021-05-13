@@ -5,6 +5,7 @@ import java.awt.Font;
  * Created by Jerry Klos
  */
 public class GameData {
+	public static final int INVALID_ATTACK_DIRECTION = -1;
 	public static final int AI_STRATEGY_DRAW = 0;
 	public static final int AI_STRATEGY_ATTACK = 1;
 	public static final int AI_STRATEGY_DEFEND = 2;
