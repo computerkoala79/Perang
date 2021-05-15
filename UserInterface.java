@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -17,7 +18,7 @@ public class UserInterface {
 	// Constants for attack and defend indices
 	private static final int ATTACK_INDEX = 0;
 	private static final int DEFEND_INDEX = 1;
-	public static final int PLAYERSIDE_GAME_STATE_3CARDS = 300;
+	public static final int PLAYERSIDE_GAME_STATE_3CARDS = 300; 
 	public static final int PLAYERSIDE_GAME_STATE_2CARDS_LC = 200;
 	public static final int PLAYERSIDE_GAME_STATE_2CARDS_LR = 201;
 	public static final int PLAYERSIDE_GAME_STATE_2CARDS_CR = 202;
@@ -25,81 +26,32 @@ public class UserInterface {
 	public static final int PLAYERSIDE_GAME_STATE_1CARD_C = 101;
 	public static final int PLAYERSIDE_GAME_STATE_1CARD_R = 102;
 	public static final int PLAYERSIDE_GAME_STATE_NOCARDS = -101;
+	private static final String INPUT_LEFT = "left";
+	private static final String INPUT_CENTER = "center";
+	private static final String INPUT_RIGHT = "right";
+	private ArrayList<String> validStringInput = new ArrayList<>();
+	private ArrayList<Integer> validHandInput = new ArrayList<>();
 	
-	private static int aiStrategyTree = -1;
-	
-	private int getAILeftCardBestAttackDirection(Card left, int defenderGameState) {
-		// attack direction is set to the center as the left card can only attack with
-		// the center and right index value
-		
-		int highestAttackValue = -1;
-		int attackDirection = GameData.CENTER;
-		int[] attackValues = left.getAttackValues();
-		for(int i = GameData.CENTER; i < attackValues.length; i++) {
-			if(highestAttackValue < attackValues[i]) {
-				highestAttackValue = attackValues[i];
-				attackDirection = i;
+	private boolean verifyStringChoice(String choice) {
+		for(String s : validStringInput) {
+			if(s.equals(choice.toLowerCase())) {
+				return true;
 			}
 		}
-		
-		if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR || defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C
-				&& attackDirection == GameData.CENTER) {
-			attackDirection = GameData.RIGHT;
-		}
-		
-		if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR || defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R
-				&& attackDirection == GameData.RIGHT) {
-			attackDirection = GameData.CENTER;
-		}
-		
-		if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R) {
-			attackDirection = GameData.INVALID_ATTACK_DIRECTION;
-		}
-		
-		return attackDirection;
+		return false;
 	}
 	
-	private int getAICenterCardBestAttackDirection(Card center, int defenderGameState) {
-		// attack direction is set to the center as the left card can only attack with
-		// the center and right index value
-				
-		int highestAttackValue = -1;
-		int attackDirection = GameData.LEFT;
-		int[] attackValues = center.getAttackValues();
-		for(int i = GameData.LEFT; i < attackValues.length; i++) {
-			if(highestAttackValue < attackValues[i]) {
-				highestAttackValue = attackValues[i];
-				attackDirection = i;
-			}
-		}
-				
-		switch(attackDirection) {
-			case GameData.LEFT:
-				if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR || 
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R ||
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					attackDirection = GameData.CENTER;
-					// intentionally not breaking switch statement
-				}
-			case GameData.CENTER:
-				if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR || 
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R ||
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
-					attackDirection = GameData.RIGHT;
-					// intentionally not breaking switch statement
-				}
-			case GameData.RIGHT:
-				if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC || 
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L ||
-					defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					attackDirection = GameData.RIGHT;
-				}
-		}
-				
-		return attackDirection;
-	}
-	
-	private CardSlot[] getAIAttackAndDefendSlots(int attackerGameState,int defenderGameState, PlayerSide ai, PlayerSide player) {
+	/**
+	 * Get AI Attack And Defend Slots
+	 * Method takes player game states and the player sides to determine
+	 * the AI's selection of Attack and Defend Card slots
+	 * @param attackerGameState
+	 * @param defenderGameState
+	 * @param ai
+	 * @param player
+	 * @return Returns a size 2 array of Card Slots in the form [attackCardSlot,defendCardSlot]
+	 */
+ 	private CardSlot[] getAIAttackAndDefendSlots(int attackerGameState,int defenderGameState, PlayerSide ai, PlayerSide player) {
 		CardSlot[] aiChoices = new CardSlot[2];
 		
 		Card left = ai.getLeft().getCardInSlot();
@@ -109,72 +61,70 @@ public class UserInterface {
 		CardSlot attackSlot = null;
 		CardSlot defendSlot = null;
 		
+		// currently just chooses a valid option, no strategy
+		
 		if(attackerGameState == PLAYERSIDE_GAME_STATE_3CARDS 
 				&& defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS) {
-			// currently just chooses a valid option, no strategy
+			
 			int attackSlotID = ThreadLocalRandom.current().nextInt(3);
 			int defendSlotID = ThreadLocalRandom.current().nextInt(3);
 			attackSlot = ai.getSlotByID(attackSlotID);
 			defendSlot = ai.getSlotByID(defendSlotID);
-		}
 		
-		// currently just chooses a valid option, no strategy
-		
+		} else {
+			
+		int attackSlotID = 0;
 		switch(attackerGameState) {
 		
 			case PLAYERSIDE_GAME_STATE_3CARDS:
 				
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(3);
+					attackSlotID = ThreadLocalRandom.current().nextInt(3);
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(2);
+					attackSlotID = ThreadLocalRandom.current().nextInt(2);
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(2) + 1;
+					attackSlotID = ThreadLocalRandom.current().nextInt(2) + 1;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(3);
+					attackSlotID = ThreadLocalRandom.current().nextInt(3);
 					while(attackSlotID == GameData.CENTER) {
 						attackSlotID = ThreadLocalRandom.current().nextInt(3);
 					}
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
-					int attackSlotID = GameData.LEFT;
+					attackSlotID = GameData.LEFT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					int attackSlotID = GameData.CENTER;
+					attackSlotID = GameData.CENTER;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R) {
-					int attackSlotID = GameData.RIGHT;
+					attackSlotID = GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} break;
 			
 			case PLAYERSIDE_GAME_STATE_2CARDS_LC:
-				
+				attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.CENTER;
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS || defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(2);
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(2);
 					if(attackSlotID == GameData.LEFT) {
-						int defendSlotID = GameData.CENTER;
 						attackSlot = ai.getSlotByID(attackSlotID);
-						defendSlot = player.getSlotByID(defendSlotID);
+						defendSlot = player.getSlotByID(GameData.CENTER);
 					} else {
 						attackSlot = ai.getSlotByID(attackSlotID);
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
-					int attackSlotID = ThreadLocalRandom.current().nextInt(2);
 					if(attackSlotID == GameData.CENTER) {
 						int defendSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 						attackSlot = ai.getSlotByID(attackSlotID);
@@ -184,56 +134,53 @@ public class UserInterface {
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
-					int attackSlotID = GameData.LEFT;
+					attackSlotID = GameData.LEFT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					int attackSlotID = GameData.CENTER;
+					attackSlotID = GameData.CENTER;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R) {
-					int attackSlotID = GameData.CENTER;
-					int defendSlotID = GameData.RIGHT;
+					attackSlotID = GameData.CENTER;
 					attackSlot = ai.getSlotByID(attackSlotID);
-					defendSlot = player.getSlotByID(defendSlotID);
+					defendSlot = player.getSlotByID(GameData.RIGHT);
 				} break;
 				
 			case PLAYERSIDE_GAME_STATE_2CARDS_LR:
 				
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS || defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 					if(attackSlotID == GameData.LEFT) {
-						int defendSlotID = GameData.CENTER;
 						attackSlot = ai.getSlotByID(attackSlotID);
-						defendSlot = player.getSlotByID(defendSlotID);
+						defendSlot = player.getSlotByID(GameData.CENTER);
 					} else {
 						attackSlot = ai.getSlotByID(attackSlotID);
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 					if(attackSlotID == GameData.RIGHT) {
-						int defendSlotID = GameData.CENTER;
 						attackSlot = ai.getSlotByID(attackSlotID);
-						defendSlot = player.getSlotByID(defendSlotID);
+						defendSlot = player.getSlotByID(GameData.CENTER);
 					} else {
 						attackSlot = ai.getSlotByID(attackSlotID);
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
-					int attackSlotID = GameData.LEFT;
+					attackSlotID = GameData.LEFT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
-					defendSlot = player.getSlotByID(attackSlotID);
+					defendSlot = player.getSlotByID(GameData.CENTER);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R) {
-					int attackSlotID = GameData.RIGHT;
+					attackSlotID = GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} break;
@@ -241,21 +188,20 @@ public class UserInterface {
 			case PLAYERSIDE_GAME_STATE_2CARDS_CR:
 				
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS || defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
 					if(attackSlotID == GameData.RIGHT) {
-						int defendSlotID = GameData.CENTER;
 						attackSlot = ai.getSlotByID(attackSlotID);
-						defendSlot = player.getSlotByID(defendSlotID);
+						defendSlot = player.getSlotByID(GameData.CENTER);
 					} else {
 						attackSlot = ai.getSlotByID(attackSlotID);
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
-					int attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
+					attackSlotID = new Random().nextBoolean() ? GameData.CENTER : GameData.RIGHT;
 					if(attackSlotID == GameData.CENTER) {
 						int defendSlotID = new Random().nextBoolean() ? GameData.LEFT : GameData.RIGHT;
 						attackSlot = ai.getSlotByID(attackSlotID);
@@ -265,18 +211,16 @@ public class UserInterface {
 						defendSlot = player.getSlotByID(attackSlotID);
 					}
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_R) {
-					int attackSlotID = GameData.RIGHT;
+					attackSlotID = GameData.RIGHT;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
-					int attackSlotID = GameData.CENTER;
+					attackSlotID = GameData.CENTER;
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
-					int attackSlotID = GameData.CENTER;
-					int defendSlotID = GameData.LEFT;
-					attackSlot = ai.getSlotByID(attackSlotID);
-					defendSlot = player.getSlotByID(defendSlotID);
+					attackSlot = ai.getSlotByID(GameData.CENTER);
+					defendSlot = player.getSlotByID(GameData.LEFT);
 				} break;
 				
 			case PLAYERSIDE_GAME_STATE_1CARD_L:
@@ -304,6 +248,7 @@ public class UserInterface {
 				} else {
 					defendSlot = player.getSlotByID(GameData.CENTER);
 				} break;
+			}
 		}
 		
 		aiChoices[ATTACK_INDEX] = attackSlot;
@@ -311,7 +256,17 @@ public class UserInterface {
 		return aiChoices;
 	}
 	
+	/**
+	 * Print Valid Defender Card Options
+	 * Method takes an attackSlot and a defender game state to determine 
+	 * valid options for the player to attack.
+	 * @param attackSlot
+	 * @param defenderGameState
+	 * @return Formated String
+	 */
 	private String printValidDefenderCardOptions(CardSlot attackSlot, int defenderGameState) {
+		if(!validStringInput.isEmpty())
+			validStringInput.clear();
 		
 		StringBuilder s = new StringBuilder();
 		int attackPosition = attackSlot.getPosition();
@@ -323,40 +278,71 @@ public class UserInterface {
 			case GameData.LEFT: 
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS || defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
 					s.append("left or center --\n");
+					validStringInput.add(INPUT_LEFT);
+					validStringInput.add(INPUT_CENTER);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR || defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
 					s.append("center --\n");
+					validStringInput.add(INPUT_CENTER);
 				} else {
 					s.append("left --\n");
+					validStringInput.add(INPUT_LEFT);
 				} break;
 			case GameData.CENTER:
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS) {
-					s.append("left,center, or right --\n");
+					s.append("left, center, or right --\n");
+					validStringInput.add(INPUT_LEFT);
+					validStringInput.add(INPUT_CENTER);
+					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
 					s.append("center or right --\\n");
+					validStringInput.add(INPUT_CENTER);
+					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
 					s.append("left or center --\\n");
+					validStringInput.add(INPUT_LEFT);
+					validStringInput.add(INPUT_CENTER);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
 					s.append("left or right --\\n");
+					validStringInput.add(INPUT_LEFT);
+					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
 					s.append("left --\n");
+					validStringInput.add(INPUT_LEFT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
 					s.append("center --\n");
+					validStringInput.add(INPUT_CENTER);
 				} else {
 					s.append("right --\n");
+					validStringInput.add(INPUT_RIGHT);
 				} break;
 			default:
 				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS || defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					s.append("center, or right --\n");
+					s.append("center or right --\n");
+					validStringInput.add(INPUT_CENTER);
+					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC || defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_C) {
 					s.append("center --\n");
+					validStringInput.add(INPUT_CENTER);
 				} else {
 					s.append("right --\n");
+					validStringInput.add(INPUT_RIGHT);
 				} break;
 		}
 		
 		return s.toString();
 	}
 	
+	/**
+	 * Battle Phase
+	 * Method takes an attacking player and a defending player along with the game board to 
+	 * prompt user with card selections. Based on selections, a card battle ensues and a 
+	 * winner is determined. No ties are allowed in single card battles. The losing card is removed
+	 * from the board. If either attacking or defending card is face down on the board, it is 
+	 * turned face up.
+	 * @param attacker
+	 * @param defender
+	 * @param board
+	 */
 	public void battlePhase(Player attacker, Player defender, Board board) {
 		int attackerGameState = getPlayerSideGameState(attacker.getPlayerSide());
 		int defenderGameState = getPlayerSideGameState(defender.getPlayerSide());
@@ -370,11 +356,25 @@ public class UserInterface {
 			
 			System.out.println("---- " + attacker.getName() + " ----");
 			
+			// test ai v ai
+			
+//			CardSlot[] aiChoices = getAIAttackAndDefendSlots(attackerGameState,defenderGameState,attacker.getPlayerSide(),defender.getPlayerSide());
+//			attackSlot = aiChoices[ATTACK_INDEX];
+//			defendSlot = aiChoices[DEFEND_INDEX];
+			
+			// end test ai v ai
+			
 			Scanner input = new Scanner(System.in);
 			
 			attackChoices = this.printValidOptionsForAttackerCardSelection(attackerGameState);
 			System.out.println(attackChoices);
 			String attackCardChoice = input.nextLine();
+			
+			while(!verifyStringChoice(attackCardChoice)) {
+				System.out.println("!!!!! Invalid Input !!!!!");
+				System.out.println(attackChoices);
+				attackCardChoice = input.nextLine();
+			}
 			
 			attackSlot = this.getCardSlotFromChoice(attacker.getPlayerSide(), attackCardChoice);
 			
@@ -382,37 +382,30 @@ public class UserInterface {
 			System.out.println(defendChoices);
 			String defendCardChoice = input.nextLine();
 			
+			while(!verifyStringChoice(defendCardChoice)) {
+				System.out.println("!!!!! Invalid Input !!!!!");
+				System.out.println(defendChoices);
+				defendCardChoice = input.nextLine();
+			}
+			
 			defendSlot = this.getCardSlotFromChoice(defender.getPlayerSide(), defendCardChoice);
 			
 		} else {
-			// place A.I addition here
-			CardSlot[] aiChoices = getAIAttackAndDefendSlots(attackerGameState,defenderGameState,attacker.getPlayerSide(),defender.getPlayerSide());
-			attackSlot = aiChoices[this.ATTACK_INDEX];
-			defendSlot = aiChoices[this.DEFEND_INDEX];
-			// after A.I. addition has been added, remove the code below
+			
 			System.out.println("---- " + attacker.getName() + " ----");
 			
-//			Scanner input = new Scanner(System.in);
-//			
-//			attackChoices = this.printValidOptionsForAttackerCardSelection(attackerGameState);
-//			System.out.println(attackChoices);
-//			String attackCardChoice = input.nextLine();
-//			
-//			attackSlot = this.getCardSlotFromChoice(attacker.getPlayerSide(), attackCardChoice);
-//			
-//			defendChoices = this.printValidDefenderCardOptions(attackSlot, defenderGameState);
-//			System.out.println(defendChoices);
-//			String defendCardChoice = input.nextLine();
-//			
-//			defendSlot = this.getCardSlotFromChoice(defender.getPlayerSide(), defendCardChoice);
+			CardSlot[] aiChoices = getAIAttackAndDefendSlots(attackerGameState,defenderGameState,attacker.getPlayerSide(),defender.getPlayerSide());
+			attackSlot = aiChoices[ATTACK_INDEX];
+			defendSlot = aiChoices[DEFEND_INDEX];
+			
 		}
 		
 		if(!attackSlot.isFaceUp()) {
-			attackSlot.setFaceUp(true);
+			flipCard(attackSlot);
 		}
 		
 		if(!defendSlot.isFaceUp()) {
-			defendSlot.setFaceUp(true);
+			flipCard(defendSlot);
 		}
 		
 		System.out.println("-- " + attackSlot.getCardInSlot().getName() + " attacks " + defendSlot.getCardInSlot().getName());
@@ -530,17 +523,47 @@ public class UserInterface {
 	private String printValidOptionsForAttackerCardSelection(int gamestate) {
 		StringBuilder s = new StringBuilder();
 		
+		if(!validStringInput.isEmpty()) {
+			validStringInput.clear();
+		}
+		
 		s.append("-- Choose a card to attack with. --\n");
 		s.append("-- Valid choices: ");
 		
 		switch(gamestate) {
-			case PLAYERSIDE_GAME_STATE_3CARDS: s.append("left, center, or right --\n"); break;
-			case PLAYERSIDE_GAME_STATE_2CARDS_LC: s.append("left or center --\\n"); break;
-			case PLAYERSIDE_GAME_STATE_2CARDS_LR: s.append("left or right --\\n"); break;
-			case PLAYERSIDE_GAME_STATE_2CARDS_CR: s.append("center or right --\\n"); break;
-			case PLAYERSIDE_GAME_STATE_1CARD_L: s.append("left --\\n"); break;
-			case PLAYERSIDE_GAME_STATE_1CARD_C: s.append("center --\\n"); break;
-			case PLAYERSIDE_GAME_STATE_1CARD_R: s.append("right --\\n"); break;
+			case PLAYERSIDE_GAME_STATE_3CARDS: 
+				s.append("left, center, or right --\n");
+				validStringInput.add(INPUT_LEFT);
+				validStringInput.add(INPUT_CENTER);
+				validStringInput.add(INPUT_RIGHT);
+				break;
+			case PLAYERSIDE_GAME_STATE_2CARDS_LC: 
+				s.append("left or center --\\n"); 
+				validStringInput.add(INPUT_LEFT);
+				validStringInput.add(INPUT_CENTER);
+				break;
+			case PLAYERSIDE_GAME_STATE_2CARDS_LR: 
+				s.append("left or right --\\n"); 
+				validStringInput.add(INPUT_LEFT);
+				validStringInput.add(INPUT_RIGHT);
+				break;
+			case PLAYERSIDE_GAME_STATE_2CARDS_CR: 
+				s.append("center or right --\\n"); 
+				validStringInput.add(INPUT_CENTER);
+				validStringInput.add(INPUT_RIGHT);
+				break;
+			case PLAYERSIDE_GAME_STATE_1CARD_L: 
+				s.append("left --\\n"); 
+				validStringInput.add(INPUT_LEFT);
+				break;
+			case PLAYERSIDE_GAME_STATE_1CARD_C: 
+				s.append("center --\\n"); 
+				validStringInput.add(INPUT_CENTER);
+				break;
+			case PLAYERSIDE_GAME_STATE_1CARD_R: 
+				s.append("right --\\n"); 
+				validStringInput.add(INPUT_RIGHT);
+				break;
 		}
 		
 		
@@ -556,6 +579,13 @@ public class UserInterface {
 		Scanner input = new Scanner(System.in);
 		System.out.println("-- Please enter your name --");
 		String playername = input.nextLine();
+		
+		while(playername.trim().isEmpty()) {
+			System.out.println("!!!! Your name cannot be blank !!!!");
+			System.out.println("-- Please enter your name --");
+			playername = input.nextLine();
+		}
+		
 		System.out.println("** " + playername + " , welcome to the battle! **");
 		return playername;
 	}
@@ -567,7 +597,7 @@ public class UserInterface {
 	 * @param board
 	 */
 	public void placePlayerCards(Player player, Board board) {
-		int[] choices = chooseCardsFromHand(player);
+		int[] choices = chooseCardsFromHand(player.getHand());
 		Card left = player.getHand().getCard(choices[GameData.LEFT]);
 		Card center = player.getHand().getCard(choices[GameData.CENTER]);
 		Card right = player.getHand().getCard(choices[GameData.RIGHT]);
@@ -601,7 +631,7 @@ public class UserInterface {
 	public void printInstructions() {
 		Scanner input = new Scanner(System.in);
 		System.out.println("-- Would you like to read the instructions? --\n"
-							+ "-- Enter yes or no --");
+							+ "-- Enter yes to view instructions.\n-- Enter anything else or just press enter to start the game --");
 		String choice = input.nextLine();
 		
 		if(choice.toLowerCase().equals("yes")) {
@@ -620,8 +650,10 @@ public class UserInterface {
 	 * @param player
 	 * @return Returns an integer array with card IDs
 	 */
-	private int[] chooseCardsFromHand(Player player) {
-		Hand hand = player.getHand();
+	private int[] chooseCardsFromHand(Hand hand) {
+		
+		int[] cardIDs = hand.getCardIDs();
+		
 		System.out.println("******\n");
 		System.out.println("* Choose 3 cards to place on the board. *\n"
 							+ "-------\n"
@@ -632,18 +664,48 @@ public class UserInterface {
 		int[] choices = new int[GameData.NUM_SLOTS];
 		choices[GameData.LEFT] = input.nextInt();
 		
+		while(!verifyCardIDSelection(choices[GameData.LEFT], cardIDs)) {
+			System.out.println("!!!! Card ID not found in hand. !!!!");
+			System.out.println("-- Choose a card for the left slot --\n" 
+					+ "-- Enter a card id from your hand  ");
+			choices[GameData.LEFT] = input.nextInt();
+		}
+		
 		System.out.println("-- Choose a card for the center slot --\n" 
 							+ "-- Enter a card id from your hand  ");
 		
 		choices[GameData.CENTER] = input.nextInt();
+		
+		while(!verifyCardIDSelection(choices[GameData.CENTER], cardIDs)) {
+			System.out.println("!!!! Card ID not found in hand. !!!!");
+			System.out.println("-- Choose a card for the center slot --\n" 
+					+ "-- Enter a card id from your hand  ");
+			choices[GameData.CENTER] = input.nextInt();
+		}
 		
 		System.out.println("-- Choose a card for the right slot --\n" 
 							+ "-- Enter a card id from your hand  ");
 		
 		choices[GameData.RIGHT] = input.nextInt();
 		
+		while(!verifyCardIDSelection(choices[GameData.RIGHT], cardIDs)) {
+			System.out.println("!!!! Card ID not found in hand. !!!!");
+			System.out.println("-- Choose a card for the right slot --\n" 
+					+ "-- Enter a card id from your hand  ");
+			choices[GameData.RIGHT] = input.nextInt();
+		}
+		
 		return choices;
 		
+	}
+	
+	private boolean verifyCardIDSelection(int cardID, int[] cardIDs) {
+		for(int i = 0; i < cardIDs.length; i++) {
+			if(cardID == cardIDs[i]) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

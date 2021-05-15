@@ -4,7 +4,7 @@ import java.awt.Font;
 /*
  * Created by Jerry Klos
  */
-public class GameData {
+public class GameData {                 
 	public static final int INVALID_ATTACK_DIRECTION = -1;
 	public static final int AI_STRATEGY_DRAW = 0;
 	public static final int AI_STRATEGY_ATTACK = 1;
@@ -34,7 +34,7 @@ public class GameData {
 	public static final Color CMD_PANEL_FG_COLOR = new Color(12,5,111);
 	public static final Font VERDANA = new Font("Verdana",Font.BOLD,12);
 	public static final String[][] CARD_NAMES = {
-			{"Jerry","Creator"},
+			{"Tenmia","Planet"},
 			{"Liakada","Unknown"},
 			{"Sebastian","Meenun"},
 			{"Draven","Unknown"},
@@ -53,7 +53,7 @@ public class GameData {
 			};
 	public static final int[][] ATTACK_STATS = 
 		{
-			{5,9,8}, // Jerry
+			{5,9,8}, // Tenmia
 			{6,5,4}, // Liakada
 			{3,4,5}, // Sebastian
 			{2,9,4}, // Draven
@@ -72,7 +72,7 @@ public class GameData {
 			};
 	public static final int[][] DEFENSE_STATS = 
 		{
-			{9,6,8}, // Jerry
+			{9,6,8}, // Tenmia
 			{6,5,4}, // Liakada
 			{3,4,5}, // Sebastian
 			{8,5,4}, // Draven
