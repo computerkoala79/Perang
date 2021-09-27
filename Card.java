@@ -9,6 +9,12 @@ public class Card {
 	private int[] defense;
 	private String type;
 	
+	/**
+	 * Public constructor, requires an integer ID to create the Card object.
+	 * The ID is used to pull information from the GameData class for building the elements of the Card.
+	 * GameData.EMPTY_SLOT can be used to create an "empty" Card.
+	 * @param cardID
+	 */
 	public Card(int cardID) {
 		if(cardID == GameData.EMPTY_SLOT) {
 			this.cardID = cardID;
@@ -40,19 +46,43 @@ public class Card {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * Attack Values are kept in an array therefore an integer representing the attack direction
+	 * is used as an index to access the attack value.
+	 * @param attackDirection
+	 * @return
+	 */
 	public int getAttack(int attackDirection) {
 		return attack[attackDirection];
 	}
-
+	
+	/**
+	 * Sets an individual attack value inside the attack array. 
+	 * An integer for the attack value and the attack direction is used as an index.
+	 * @param attackValue
+	 * @param attackDirection
+	 */
 	public void setAttack(int attackValue, int attackDirection) {
 		this.attack[attackDirection] = attackValue;
 	}
-
+	
+	/**
+	 * Defend Values are kept in an array therefore an integer representing the defend direction
+	 * is used as an index to access the defend value.
+	 * @param defenseDirection
+	 * @return
+	 */
 	public int getDefense(int defenseDirection) {
 		return defense[defenseDirection];
 	}
-
+	
+	/**
+	 * Sets an individual defend value inside the attack array. 
+	 * An integer for the defend value and the defend direction is used as an index.
+	 * @param defenseValue
+	 * @param defenseDirection
+	 */
 	public void setDefense(int defenseValue, int defenseDirection) {
 		this.defense[defenseDirection] = defenseValue;
 	}
@@ -73,6 +103,11 @@ public class Card {
 		this.type = type;
 	}
 	
+	/**
+	 * Searches the attack array for the highest value and returns the index within the array.
+	 * Used for AI
+	 * @return
+	 */
 	public int getHighestAttackDirectionFromCard() {
 		int highestAttackValue = -1;
 		int attackDirection = -1;
@@ -86,6 +121,11 @@ public class Card {
 		return attackDirection;
 	}
 	
+	/**
+	 * Searches the attack array for the highest value and returns it.
+	 * Used for AI
+	 * @return
+	 */
 	public int getHighestAttackValueFromCard() {
 		int highestAttackValue = -1;
 		
@@ -98,6 +138,10 @@ public class Card {
 		return highestAttackValue;
 	}
 	
+	/**
+	 * Prints out the card in a more visually pleasing format.
+	 * @return
+	 */
 	public String printCard() {
 		StringBuilder s = new StringBuilder();
 		s.append("-------------------\n");

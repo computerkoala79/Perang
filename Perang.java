@@ -17,7 +17,7 @@ public class Perang {
 	
 	/**
 	 * Perang
-	 * Game Contructor with instruction selection options
+	 * Game Constructor with instruction selection options
 	 */
 	public Perang() {
 		ui = new UserInterface();
@@ -60,6 +60,7 @@ public class Perang {
 	 * @return Returns true if the game is over via a win or tie.
 	 */
 	public boolean isGameOver() {
+		
 		// code to determine if the game is over
 		if(player.getPlayerSide().allSlotsAreEmpty()) {
 			System.out.println("------ " + ai.getName() + " wins!!! ------");
@@ -72,6 +73,9 @@ public class Perang {
 			return true;
 		}
 		return false;
+		
+		// this could also be done with the UserInterface Game State function, 
+		// however the efficiency of the playerside functions, while minimal, is still better
 	}
 	
 	/**
@@ -127,7 +131,6 @@ public class Perang {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		System.out.println(printStartScreen());
 		Perang perang = new Perang();
 		perang.setup();

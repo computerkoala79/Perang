@@ -32,6 +32,12 @@ public class UserInterface {
 	private ArrayList<String> validStringInput = new ArrayList<>();
 	private ArrayList<Integer> validHandInput = new ArrayList<>();
 	
+	/**
+	 * Verifies user input is a valid choice and returns a matching boolean
+	 * compares against validStringInput method
+	 * @param choice
+	 * @return
+	 */
 	private boolean verifyStringChoice(String choice) {
 		for(String s : validStringInput) {
 			if(s.equals(choice.toLowerCase())) {
@@ -45,6 +51,7 @@ public class UserInterface {
 	 * Get AI Attack And Defend Slots
 	 * Method takes player game states and the player sides to determine
 	 * the AI's selection of Attack and Defend Card slots
+	 * currently the AI does not use an informed function to make attack decisions
 	 * @param attackerGameState
 	 * @param defenderGameState
 	 * @param ai
@@ -52,24 +59,29 @@ public class UserInterface {
 	 * @return Returns a size 2 array of Card Slots in the form [attackCardSlot,defendCardSlot]
 	 */
  	private CardSlot[] getAIAttackAndDefendSlots(int attackerGameState,int defenderGameState, PlayerSide ai, PlayerSide player) {
-		CardSlot[] aiChoices = new CardSlot[2];
+ 		// creates a card slot array to return
+ 		CardSlot[] aiChoices = new CardSlot[2];
 		
-		Card left = ai.getLeft().getCardInSlot();
-		Card center = ai.getCenter().getCardInSlot();
-		Card right = ai.getRight().getCardInSlot();
-		
+		// create null CardSlots to represent attack and defend selections
 		CardSlot attackSlot = null;
 		CardSlot defendSlot = null;
 		
-		// currently just chooses a valid option, no strategy
-		
+		// AI selects cards based on game states
 		if(attackerGameState == PLAYERSIDE_GAME_STATE_3CARDS 
 				&& defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS) {
 			
 			int attackSlotID = ThreadLocalRandom.current().nextInt(3);
 			int defendSlotID = ThreadLocalRandom.current().nextInt(3);
 			attackSlot = ai.getSlotByID(attackSlotID);
-			defendSlot = ai.getSlotByID(defendSlotID);
+			
+			// Guard against invalid attack
+			if(attackSlotID == GameData.LEFT && defendSlotID == GameData.RIGHT) {
+				defendSlotID--;
+			} else if(attackSlotID == GameData.RIGHT && defendSlotID == GameData.LEFT) {
+				defendSlotID++;
+			}
+			
+			defendSlot = player.getSlotByID(defendSlotID);
 		
 		} else {
 			
@@ -78,11 +90,7 @@ public class UserInterface {
 		
 			case PLAYERSIDE_GAME_STATE_3CARDS:
 				
-				if(defenderGameState == PLAYERSIDE_GAME_STATE_3CARDS) {
-					attackSlotID = ThreadLocalRandom.current().nextInt(3);
-					attackSlot = ai.getSlotByID(attackSlotID);
-					defendSlot = player.getSlotByID(attackSlotID);
-				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
+				if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
 					attackSlotID = ThreadLocalRandom.current().nextInt(2);
 					attackSlot = ai.getSlotByID(attackSlotID);
 					defendSlot = player.getSlotByID(attackSlotID);
@@ -294,15 +302,15 @@ public class UserInterface {
 					validStringInput.add(INPUT_CENTER);
 					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_CR) {
-					s.append("center or right --\\n");
+					s.append("center or right --\n");
 					validStringInput.add(INPUT_CENTER);
 					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LC) {
-					s.append("left or center --\\n");
+					s.append("left or center --\n");
 					validStringInput.add(INPUT_LEFT);
 					validStringInput.add(INPUT_CENTER);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_2CARDS_LR) {
-					s.append("left or right --\\n");
+					s.append("left or right --\n");
 					validStringInput.add(INPUT_LEFT);
 					validStringInput.add(INPUT_RIGHT);
 				} else if(defenderGameState == PLAYERSIDE_GAME_STATE_1CARD_L) {
@@ -440,7 +448,13 @@ public class UserInterface {
 	}
 	
 	
-	
+	/**
+	 * Get Attack Values from Choices
+	 * Based on an attackSlot and defendSlot, returns an array containing the attack and defend values
+	 * @param attackSlot
+	 * @param defendSlot
+	 * @return
+	 */
 	private int[] getAttackValueFromChoices(CardSlot attackSlot, CardSlot defendSlot) {
 		// TODO Auto-generated method stub
 		int[] battleValues = new int[2];
@@ -484,6 +498,12 @@ public class UserInterface {
 		return battleValues;
 	}
 
+	/**
+	 * Get Player Side Game State
+	 * Given a PlayerSide, returns an integer representation of the player's Game State
+	 * @param playerside
+	 * @return
+	 */
 	public int getPlayerSideGameState(PlayerSide playerside) {
 		CardSlot left = playerside.getLeft();
 		CardSlot center = playerside.getCenter();
@@ -520,6 +540,12 @@ public class UserInterface {
 		return PLAYERSIDE_GAME_STATE_NOCARDS;
 	}
 	
+	/**
+	 * Print Valid Options for Attacker Card Selection
+	 * Given a game state, returns a formatted string to print out the valid choices a player can make
+	 * @param gamestate
+	 * @return
+	 */
 	private String printValidOptionsForAttackerCardSelection(int gamestate) {
 		StringBuilder s = new StringBuilder();
 		
@@ -699,6 +725,13 @@ public class UserInterface {
 		
 	}
 	
+	/**
+	 * Verify Card ID Selection
+	 * guards against invalid card selection
+	 * @param cardID
+	 * @param cardIDs
+	 * @return
+	 */
 	private boolean verifyCardIDSelection(int cardID, int[] cardIDs) {
 		for(int i = 0; i < cardIDs.length; i++) {
 			if(cardID == cardIDs[i]) {
@@ -852,16 +885,6 @@ public class UserInterface {
 		}
 	}
 	
-	// currently unused
-	private CardSlot getCardSlotChoice(String name, PlayerSide slots) {
-		Scanner input = new Scanner(System.in);
-		System.out.println("-- " + name + ", choose a card to attack with --");
-		System.out.println("-- Enter left, center, right: ");
-		String choice = input.nextLine();
-		CardSlot attackSlot = this.getCardSlotFromChoice(slots, choice);
-		return attackSlot;
-	}
-	
 	/**
 	 * Card Battle
 	 * Method takes an attacker, a defender, and the board to determine a winner of the card battle.
@@ -919,7 +942,7 @@ public class UserInterface {
 	
 		
 		// get attack and defend values
-		attackValues = this.setAttackValues(attackSlot, defendSlot, choice, attackDirection, attackValues);
+		attackValues = setAttackValues(attackSlot, defendSlot, choice, attackDirection, attackValues);
 		
 		// ******* debugging
 		System.out.println("Attacker Value: " + attackValues[ATTACK_INDEX] + "\n" 
@@ -968,7 +991,14 @@ public class UserInterface {
 		
 	}
 	
-	
+	/**
+	 * Valid Attack Direction
+	 * Guards against invalid attack directions
+	 * @param attackDirection
+	 * @param attackSlot
+	 * @param defenderSide
+	 * @return
+	 */
 	private boolean validAttackDirection(int attackDirection, CardSlot attackSlot, PlayerSide defenderSide) {
 		// TODO Auto-generated method stub
 		System.out.println("attack direction: " + attackDirection);
@@ -1034,9 +1064,4 @@ public class UserInterface {
 		return false;
 	}
 
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-	}
 }

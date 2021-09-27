@@ -33,16 +33,16 @@ public class Board {
 	
 	private void placeRight(Player player, Card card) {
 		// TODO Auto-generated method stub
-		player.getPlayerSide().getRight().setCard(card, player, GameData.RIGHT);
+		player.getPlayerSide().getRight().setCard(card, player);
 	}
 
 	private void placeCenter(Player player, Card card) {
 		// TODO Auto-generated method stub
-		player.getPlayerSide().getCenter().setCard(card, player, GameData.CENTER);
+		player.getPlayerSide().getCenter().setCard(card, player);
 	}
 
 	private void placeLeft(Player player, Card card) {
-		player.getPlayerSide().getLeft().setCard(card, player, GameData.LEFT);
+		player.getPlayerSide().getLeft().setCard(card, player);
 	}
 	
 	/**

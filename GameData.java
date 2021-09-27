@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Scanner;
 
 /*
  * Created by Jerry Klos
@@ -90,6 +91,6 @@ public class GameData {
 			{8,9,7}, // Our Fathers
 			};
 	
-	
+
 	
 }
