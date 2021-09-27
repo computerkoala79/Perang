@@ -75,7 +75,7 @@ public class Perang {
 		return false;
 		
 		// this could also be done with the UserInterface Game State function, 
-		// however the efficiency of the playerside functions, while minimal, is still better
+		// however the efficiency of the player side functions, while minimal, is still better
 	}
 	
 	/**
